@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Animated, PermissionsAndroid } from 'react-nati
 
 import { API_KEY } from './utils/WeatherAPIKey';
 
-  import Weather from './components/Weather';
+  import Weather from './src/components/Weather';
 
 export default class App extends React.Component {
   state = {
