@@ -1,18 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View, Animated, PermissionsAndroid } from 'react-native';
 
-import { API_KEY } from './utils/WeatherAPIKey';
+import { API_KEY } from './src/utils/WeatherAPIKey';
 
   import Weather from './src/components/Weather';
 
+  import Geolocation from '@react-native-community/geolocation';
+
 export default class App extends React.Component {
+
   state = {
     isLoading: false,
     temperature: 0,
     weatherCondition: null,
     error: null
   };
-//-23.6478872,-46.7642939
+
 componentDidMount() {
 
   this.pegaPermissao();    
@@ -44,10 +47,10 @@ componentDidMount() {
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can use the GPS');
-        await navigator.geolocation.getCurrentPosition(
-          position => {
-            this.fetchWeather(-23.6478872,-46.7642939);
-        //     // this.fetchWeather(position.coords.latitude, position.coords.longitude);
+
+        Geolocation.getCurrentPosition(
+          position => { 
+            this.fetchWeather(position.coords.latitude, position.coords.longitude);
           },
           error => {
             this.setState({
@@ -69,7 +72,7 @@ componentDidMount() {
     )
       .then(res => res.json())
       .then(json => {
-        console.log(json);
+        console.log("Retorno", json);
         this.setState({
           temperature: json.main.temp,
           weatherCondition: json.weather[0].main,
@@ -79,10 +82,11 @@ componentDidMount() {
   }
 
   render() {
-    const { isLoading } = this.state;
+    const { isLoading, weatherCondition, temperature } = this.state;
     return (
       <View style={styles.container}>
-        {isLoading ? <Text>Fetching The Weather</Text> : <Weather weather={weatherCondition} temperature={temperature} />}
+        {isLoading ? <Text>Fetching The Weather</Text> 
+        : <Weather weather={weatherCondition} temperature={temperature} />}
       </View>
     );
   }
