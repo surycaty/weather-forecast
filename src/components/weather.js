@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-// import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import { weatherConditions } from '../utils/WeatherConditions';
 
@@ -25,11 +25,7 @@ export default class WeatherScreen extends React.Component {
       ]}
     >
       <View style={styles.headerContainer}>
-        {/* <MaterialCommunityIcons
-          size={72}
-          name={weatherConditions['Snow'].icon}
-          color={'#fff'}
-        /> */}
+        <MaterialCommunityIcons size={72} name={weatherConditions[weather].icon} color={'#fff'} />
         <Text style={styles.tempText}>{temperature}˚</Text>
       </View>
       <View style={styles.bodyContainer}>

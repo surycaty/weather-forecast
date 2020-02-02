@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, Button, Text, StyleSheet, PermissionsAndroid } from 'react-native';
+import { View, Button, Text, StyleSheet, PermissionsAndroid, FlatList } from 'react-native';
 import { API_KEY } from '../utils/WeatherAPIKey';
 import Geolocation from '@react-native-community/geolocation';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default class HomeScreen extends React.Component {
 
@@ -72,6 +74,21 @@ export default class HomeScreen extends React.Component {
       const { isLoading, weatherCondition, temperature, localName } = this.state;
       const {navigate} = this.props.navigation;
 
+      const list = [
+        {
+          key: 'Fortaleza',
+          subtitle: 'Fortaleza-CE',
+          icon: 'weather-cloudy',
+          temperature: 30
+        },
+        {
+          key: 'Sao Paulo',
+          subtitle: 'São Paulo', 
+          icon: 'weather-sunny',
+          temperature: 25
+        },
+      ]
+
       return (
         <View style={styles.container}>
           {isLoading ? <Text>Fetching The Weather</Text> 
@@ -80,11 +97,19 @@ export default class HomeScreen extends React.Component {
             <View style={styles.listCity}>
               <Text>{localName} - {temperature}</Text>
             </View>
-            <Text>Home ;D</Text>
-            <Button 
-              title="Ir para Weather"
-              onPress={() => navigate('Weather', {weather: weatherCondition, temperature: temperature}) }
-            />
+            <View style={styles.container}>
+              <FlatList style={{ flex:1}}
+                data={list}
+                renderItem={({item}) => 
+                  <View style={{ flex:1, backgroundColor: '#456'}}>
+                    <MaterialCommunityIcons.Button size={48} name={item.icon} color={'#fff'}
+                    onPress={() => navigate('Weather', {weather: weatherCondition, temperature: temperature}) }>
+                      <Text>{item.subtitle}</Text>
+                    </MaterialCommunityIcons.Button>
+                  </View>
+                }
+              />
+            </View>
           </View>
           }
         </View>
@@ -98,7 +123,7 @@ export default class HomeScreen extends React.Component {
       backgroundColor: '#fff'
     },
     listCity: {
-      // backgroundColor: '#456'
+      backgroundColor: '#456'
     }
   });
 
