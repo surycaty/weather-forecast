@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { weatherConditions } from '../utils/WeatherConditions';
+import { weatherConditions } from '../utils/weather-conditions';
 
 export default class WeatherScreen extends React.Component {
 

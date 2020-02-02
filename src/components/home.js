@@ -2,8 +2,8 @@ import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
 import { FlatList, PermissionsAndroid, StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { API_KEY } from '../utils/WeatherAPIKey';
-import { weatherConditions } from '../utils/WeatherConditions';
+import { API_KEY } from '../utils/weather-api-key';
+import { weatherConditions } from '../utils/weather-conditions';
 
 export default class HomeScreen extends React.Component {
 
