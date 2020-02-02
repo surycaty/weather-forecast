@@ -71,13 +71,14 @@ export default class HomeScreen extends React.Component {
     render() {
       const { isLoading, weatherCondition, temperature, localName } = this.state;
       const {navigate} = this.props.navigation;
+
       return (
         <View style={styles.container}>
           {isLoading ? <Text>Fetching The Weather</Text> 
           : 
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <View>
-          <Text>{localName} - {temperature}</Text>
+            <View style={styles.listCity}>
+              <Text>{localName} - {temperature}</Text>
             </View>
             <Text>Home ;D</Text>
             <Button 
@@ -95,6 +96,9 @@ export default class HomeScreen extends React.Component {
     container: {
       flex: 1,
       backgroundColor: '#fff'
+    },
+    listCity: {
+      // backgroundColor: '#456'
     }
   });
 
