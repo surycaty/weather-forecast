@@ -1,15 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import PropTypes from 'prop-types';
 import { weatherConditions } from '../utils/WeatherConditions';
 
 export default class WeatherScreen extends React.Component {
 
   state = {
     isLoading: false,
-    temperature: 0,
-    weatherCondition: null,
     error: null
   };
   
@@ -25,7 +22,10 @@ export default class WeatherScreen extends React.Component {
       ]}
     >
       <View style={styles.headerContainer}>
-        <MaterialCommunityIcons size={72} name={weatherConditions[weather].icon} color={'#fff'} />
+        <MaterialCommunityIcons 
+            size={80}
+            color={'#fff'}
+            name={weatherConditions[weather].icon} />
         <Text style={styles.tempText}>{temperature}˚</Text>
       </View>
       <View style={styles.bodyContainer}>
@@ -37,11 +37,6 @@ export default class WeatherScreen extends React.Component {
     </View>);
   };
 }
-
-WeatherScreen.propTypes = {
-  temperature: PropTypes.number.isRequired,
-  weather: PropTypes.string
-};
 
 const styles = StyleSheet.create({
   weatherContainer: {
