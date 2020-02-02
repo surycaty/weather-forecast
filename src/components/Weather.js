@@ -1,11 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { MaterialCommunityIcons } from 'react-native-vector-icons';
+// import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import PropTypes from 'prop-types';
 import { weatherConditions } from '../utils/WeatherConditions';
 
-const Weather = ({ weather, temperature }) => {
-  return (
+export default class WeatherScreen extends React.Component {
+
+  state = {
+    isLoading: false,
+    temperature: 0,
+    weatherCondition: null,
+    error: null
+  };
+  
+  render() {
+
+    const {temperature, weather} = this.props.navigation.state.params;
+
+    return (
     <View
       style={[
         styles.weatherContainer,
@@ -13,11 +25,11 @@ const Weather = ({ weather, temperature }) => {
       ]}
     >
       <View style={styles.headerContainer}>
-        <MaterialCommunityIcons
+        {/* <MaterialCommunityIcons
           size={72}
-          name={weatherConditions[weather].icon}
+          name={weatherConditions['Snow'].icon}
           color={'#fff'}
-        />
+        /> */}
         <Text style={styles.tempText}>{temperature}˚</Text>
       </View>
       <View style={styles.bodyContainer}>
@@ -26,11 +38,11 @@ const Weather = ({ weather, temperature }) => {
           {weatherConditions[weather].subtitle}
         </Text>
       </View>
-    </View>
-  );
-};
+    </View>);
+  };
+}
 
-Weather.propTypes = {
+WeatherScreen.propTypes = {
   temperature: PropTypes.number.isRequired,
   weather: PropTypes.string
 };
@@ -65,5 +77,3 @@ const styles = StyleSheet.create({
     color: '#fff'
   }
 });
-
-export default Weather;
