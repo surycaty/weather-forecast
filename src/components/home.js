@@ -4,20 +4,22 @@ import { FlatList, PermissionsAndroid, StyleSheet, Text, View } from 'react-nati
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_KEY } from '../utils/weather-api-key';
 import { weatherConditions } from '../utils/weather-conditions';
+import Toast from 'react-native-simple-toast';
 
 export default class HomeScreen extends React.Component {
 
   state = {
     isLoading: false,
     locals: [],
-    error: null
+    error: null,
+    refreshing: false,
   };
   
   componentDidMount() {
-    this.pegaPermissao();
+    this.getPermission();
   }
   
-  async pegaPermissao() {
+  async getPermission() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
@@ -28,23 +30,27 @@ export default class HomeScreen extends React.Component {
         },
       );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        
-        Geolocation.getCurrentPosition(
-          position => { 
-            this.fetchWeather(position.coords.latitude, position.coords.longitude);
-          },
-          error => {
-            this.setState({
-              error: 'Error Gettig Weather Condtions'
-            });
-          }
-        );
-      } else {
-        console.log('GPS permission denied');
-      }
+      this.getPositionWeather(granted);
     } catch (err) {
       console.warn(err);
+    }
+  }
+
+  getPositionWeather(granted) {
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        
+      Geolocation.getCurrentPosition(
+        position => { 
+          this.fetchWeather(position.coords.latitude, position.coords.longitude);
+        },
+        error => {
+          this.setState({
+            error: 'Error Gettig Weather Condtions'
+          });
+        }
+      );
+    } else {
+      console.log('GPS permission denied');
     }
   }
   
@@ -80,38 +86,50 @@ export default class HomeScreen extends React.Component {
           localName: json.name,
           weatherCondition: json.weather[0].main,
           locals: arrItem,
-          isLoading: false
+          isLoading: false,
+          refreshing: false
         })
 
+      }).catch(error => {
+        Toast.show('Error Gettig Weather Condtions')
       });
+  }
+
+  onRefresh = () => {
+    console.log("refreshing");
+
+    this.getPermission();
+
+    return true;
   }
 
   render() {
 
-    const { isLoading, locals } = this.state;
+    const { isLoading, locals, refreshing } = this.state;
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.main}>
         {isLoading ? <Text>Fetching The Weather</Text> 
         : 
-          <View style={styles.container}>
-            <FlatList
-              data={locals}
-              renderItem={({item}) => 
-                <View style={styles.listItem}>
-                  <MaterialCommunityIcons.Button 
-                    size={48}
-                    color={'#EEE'}
-                    name={weatherConditions[item.weatherCondition].icon} 
-                    onPress={() => 
-                      navigate('Weather', {weather: item.weatherCondition, temperature: item.temperature}) }>
-                    <Text style={styles.textItem}>{item.subtitle} - {item.temperature}°</Text>
-                  </MaterialCommunityIcons.Button>
-                </View>
-              }
-            />
-          </View>
+
+              <FlatList 
+                refreshing={refreshing}
+                onRefresh={this.onRefresh} 
+                data={locals}
+                renderItem={({item}) => 
+                  <View style={styles.listItem}>
+                    <MaterialCommunityIcons.Button 
+                      size={48}
+                      color={'#EEE'}
+                      name={weatherConditions[item.weatherCondition].icon} 
+                      onPress={() => 
+                        navigate('Weather', {weather: item.weatherCondition, temperature: item.temperature}) }>
+                      <Text style={styles.textItem}>{item.subtitle} - {item.temperature}°</Text>
+                    </MaterialCommunityIcons.Button>
+                  </View>
+                }
+              />
         }
       </View>
     );
