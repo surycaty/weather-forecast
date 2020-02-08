@@ -4,8 +4,18 @@ import HomeScreen from './components/home';
 import WeatherScreen from './components/weather';
 
 const NavigationStack = createStackNavigator({
-    Home: {screen: HomeScreen},
-    Weather: {screen: WeatherScreen},
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: {
+        headerShown: false,
+      }
+    },
+    Weather: {
+      screen: WeatherScreen,
+      navigationOptions: {
+        headerShown: false,
+      }
+    },
   });
 
 const Routes = createAppContainer(NavigationStack);
