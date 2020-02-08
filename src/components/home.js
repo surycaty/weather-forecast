@@ -1,36 +1,43 @@
 import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
-import { FlatList, PermissionsAndroid, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  PermissionsAndroid,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { API_KEY } from '../utils/weather-api-key';
 import { weatherConditions } from '../utils/weather-conditions';
 import Toast from 'react-native-simple-toast';
 
 export default class HomeScreen extends React.Component {
-
   state = {
     isLoading: false,
     locals: [],
     error: null,
     refreshing: false,
   };
-  
+
   componentDidMount() {
     this.getPermission();
   }
-  
+
   async getPermission() {
     try {
       const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-          title: "Parmissao GPS",
-          message: "deixa ai va la",
-          buttonNegative: "Nao",
-          buttonPositive: "Sim"
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: 'Parmissao GPS',
+          message: 'deixa ai va la',
+          buttonNegative: 'Nao',
+          buttonPositive: 'Sim',
         },
       );
-
+      
       this.getPositionWeather(granted);
+      
     } catch (err) {
       console.warn(err);
     }
@@ -55,14 +62,14 @@ export default class HomeScreen extends React.Component {
   }
   
   fetchWeather(lat = 25, lon = 25) {
-      fetch(
-      `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`
+    fetch(
+      `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`,
     )
       .then(res => res.json())
       .then(json => {
-        const arrItem= [
+        const arrItem = [
           {
-            key: json.id.toString(), 
+            key: json.id.toString(),
             subtitle: json.name,
             temperature: Math.round(json.main.temp),
             weatherCondition: json.weather[0].main,
@@ -71,15 +78,15 @@ export default class HomeScreen extends React.Component {
             key: '123',
             subtitle: 'Fortaleza-CE',
             temperature: 30,
-            weatherCondition: 'Clear'
+            weatherCondition: 'Clear',
           },
           {
             key: '1234',
             subtitle: 'São Paulo',
-            temperature: 25, 
-            weatherCondition: 'Rain'
+            temperature: 25,
+            weatherCondition: 'Rain',
           },
-        ]
+        ];
 
         this.setState({
           temperature: json.main.temp,
@@ -87,7 +94,7 @@ export default class HomeScreen extends React.Component {
           weatherCondition: json.weather[0].main,
           locals: arrItem,
           isLoading: false,
-          refreshing: false
+          refreshing: false,
         })
 
       }).catch(error => {
@@ -104,7 +111,7 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
-
+    
     const { isLoading, locals, refreshing } = this.state;
     const { navigate } = this.props.navigation;
 
@@ -112,7 +119,6 @@ export default class HomeScreen extends React.Component {
       <View style={styles.main}>
         {isLoading ? <Text>Fetching The Weather</Text> 
         : 
-
               <FlatList 
                 refreshing={refreshing}
                 onRefresh={this.onRefresh} 
@@ -135,26 +141,22 @@ export default class HomeScreen extends React.Component {
     );
   }
 }
-  
+
 const styles = StyleSheet.create({
   main: {
     flex: 1,
   },
-  container: { 
-    flex: 1, 
-    justifyContent: 'center', 
+  container: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  listItem: { 
-    flex:1, 
-    backgroundColor: '#456'
+  listItem: {
+    flex: 1,
+    backgroundColor: '#456',
   },
   textItem: {
-    color:'#EEE', 
-    fontSize:18, 
-    fontWeight:"bold"
-  }
+    color: '#EEE',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
-
-HomeScreen.navigationOptions = {
-  title: 'Home',
-}
