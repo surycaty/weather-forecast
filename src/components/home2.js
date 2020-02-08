@@ -1,17 +1,12 @@
-import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
-import {
-  FlatList,
-  PermissionsAndroid,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { API_KEY } from '../utils/weather-api-key';
+import { PermissionsAndroid, FlatList } from 'react-native';
+import styled, { ThemeProvider } from 'styled-components/native';
+import Card from './Card';
 import { weatherConditions } from '../utils/weather-conditions';
+import Geolocation from '@react-native-community/geolocation';
+import { API_KEY } from '../utils/weather-api-key';
 
-export default class HomeScreen extends React.Component {
+export default class HomeScreen2 extends React.Component {
   state = {
     isLoading: false,
     locals: [],
@@ -27,10 +22,10 @@ export default class HomeScreen extends React.Component {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Parmissao GPS',
-          message: 'deixa ai va la',
-          buttonNegative: 'Nao',
-          buttonPositive: 'Sim',
+          title: 'Libera o GPS ai',
+          message: 'Ei mah, deixa ai vai lá',
+          buttonNegative: 'Aidento',
+          buttonPositive: 'Arrocha',
         },
       );
 
@@ -93,63 +88,49 @@ export default class HomeScreen extends React.Component {
       });
   }
 
-  render() {
-    const { isLoading, locals } = this.state;
-    const { navigate } = this.props.navigation;
+  theme = {
+    margin: 0,
+    padding: 0,
+    boxSizing: 'border-box',
+  };
 
+  render() {
     return (
-      <View style={styles.main}>
-        {isLoading ? (
-          <Text>Fetching The Weather</Text>
-        ) : (
-          <View style={styles.container}>
-            <FlatList
-              data={locals}
-              renderItem={({ item }) => (
-                <View style={styles.listItem}>
-                  <MaterialCommunityIcons.Button
-                    size={48}
-                    color={'#EEE'}
-                    name={weatherConditions[item.weatherCondition].icon}
-                    onPress={() =>
-                      navigate('Weather', {
-                        weather: item.weatherCondition,
-                        temperature: item.temperature,
-                      })
-                    }>
-                    <Text style={styles.textItem}>
-                      {item.subtitle} - {item.temperature}°
-                    </Text>
-                  </MaterialCommunityIcons.Button>
-                </View>
-              )}
-            />
-          </View>
-        )}
-      </View>
+      <ThemeProvider theme={this.theme}>
+        <Container>
+          <Titlebar>
+            <Title>Weather Forecast</Title>
+          </Titlebar>
+          <FlatList
+            data={this.state.locals}
+            renderItem={({ item }) => (
+              <Card
+                key={item.key}
+                city={item.subtitle}
+                temperature={item.temperature}
+                weather={weatherConditions[item.weatherCondition]}
+              />
+            )}
+          />
+        </Container>
+      </ThemeProvider>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  listItem: {
-    flex: 1,
-    backgroundColor: '#456',
-  },
-  textItem: {
-    color: '#EEE',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
-
-// HomeScreen.navigationOptions = {
-//   title: 'Home',
-// };
+const Container = styled.View`
+  flex: 1;
+  background-color: white;
+`;
+const Titlebar = styled.View`
+  width: 100%;
+  margin-top: 30px;
+  padding-left: 60px;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+`;
+const Title = styled.Text`
+  font-size: 40px;
+  font-weight: 500;
+  color: #b8bece;
+`;
