@@ -8,6 +8,8 @@ import { API_KEY } from '../utils/weather-api-key';
 import Toast from 'react-native-simple-toast';
 
 export default class HomeScreen2 extends React.Component {
+
+  listIdCities= [];
   state = {
     isLoading: false,
     locals: [],
@@ -16,6 +18,8 @@ export default class HomeScreen2 extends React.Component {
   };
 
   componentDidMount() {
+    this.listIdCities.push('524901');
+    this.listIdCities.push('703448');
     this.getPermission();
   }
 
@@ -32,6 +36,8 @@ export default class HomeScreen2 extends React.Component {
       );
 
       this.getPositionWeather(granted);
+
+      this.getLocalsWeather(granted);
 
     } catch (err) {
       console.warn(err);
@@ -58,38 +64,54 @@ export default class HomeScreen2 extends React.Component {
     }
   }
 
+  getLocalsWeather = (granted) => {
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+
+      if(this.listIdCities.length > 0) {
+        this.fetchLocalsWeather(this.listIdCities.join(','));
+      }
+
+    } else {
+      console.log('GPS permission denied');
+    }
+  }
+
+  fetchLocalsWeather(cities) {
+    fetch(
+      `http://api.openweathermap.org/data/2.5/group?id=${cities}&units=metric&appid=${API_KEY}`,
+    )
+    .then(res => res.json())
+    .then(json => {
+      json.list.forEach(element => {
+        this.state.locals.push({
+              key: element.id.toString(),
+              subtitle: element.name,
+              temperature: Math.round(element.main.temp),
+              weatherCondition: element.weather[0].main,
+            })
+      });
+    })
+    .catch(error => {
+      console.log(error)
+      Toast.show('Error Gettig Weather Condtions')
+    });
+  }
+
   fetchWeather(lat = 25, lon = 25) {
     fetch(
       `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`,
     )
     .then(res => res.json())
     .then(json => {
-      const arrItem = [
-        {
-          key: json.id.toString(),
-          subtitle: json.name,
-          temperature: Math.round(json.main.temp),
-          weatherCondition: json.weather[0].main,
-        },
-        {
-          key: '123',
-          subtitle: 'Fortaleza-CE',
-          temperature: 30,
-          weatherCondition: 'Clear',
-        },
-        {
-          key: '1234',
-          subtitle: 'São Paulo',
-          temperature: 25,
-          weatherCondition: 'Rain',
-        },
-      ];
-
       this.setState({
-        temperature: json.main.temp,
-        localName: json.name,
-        weatherCondition: json.weather[0].main,
-        locals: arrItem,
+        locals: [
+          {
+            key: json.id.toString(),
+            subtitle: json.name,
+            temperature: Math.round(json.main.temp),
+            weatherCondition: json.weather[0].main,
+          }
+        ],
         isLoading: false,
         refreshing: false,
       });
@@ -107,9 +129,7 @@ export default class HomeScreen2 extends React.Component {
 
   onRefresh = () => {
     console.log("refreshing");
-
     this.getPermission();
-
     return true;
   }
 
