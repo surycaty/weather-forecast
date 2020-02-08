@@ -29,7 +29,7 @@ export default class HomeScreen extends React.Component {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-          title: 'Parmissao GPS',
+          title: 'Permissao GPS',
           message: 'deixa ai va la',
           buttonNegative: 'Nao',
           buttonPositive: 'Sim',
@@ -45,14 +45,16 @@ export default class HomeScreen extends React.Component {
 
   getPositionWeather(granted) {
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        
       Geolocation.getCurrentPosition(
-        position => { 
-          this.fetchWeather(position.coords.latitude, position.coords.longitude);
+        position => {
+          this.fetchWeather(
+            position.coords.latitude,
+            position.coords.longitude,
+          );
         },
-        error => {
+        () => {
           this.setState({
-            error: 'Error Gettig Weather Condtions'
+            error: 'Error Gettig Weather Condtions',
           });
         }
       );
@@ -65,41 +67,41 @@ export default class HomeScreen extends React.Component {
     fetch(
       `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`,
     )
-      .then(res => res.json())
-      .then(json => {
-        const arrItem = [
-          {
-            key: json.id.toString(),
-            subtitle: json.name,
-            temperature: Math.round(json.main.temp),
-            weatherCondition: json.weather[0].main,
-          },
-          {
-            key: '123',
-            subtitle: 'Fortaleza-CE',
-            temperature: 30,
-            weatherCondition: 'Clear',
-          },
-          {
-            key: '1234',
-            subtitle: 'São Paulo',
-            temperature: 25,
-            weatherCondition: 'Rain',
-          },
-        ];
-
-        this.setState({
-          temperature: json.main.temp,
-          localName: json.name,
+    .then(res => res.json())
+    .then(json => {
+      const arrItem = [
+        {
+          key: json.id.toString(),
+          subtitle: json.name,
+          temperature: Math.round(json.main.temp),
           weatherCondition: json.weather[0].main,
-          locals: arrItem,
-          isLoading: false,
-          refreshing: false,
-        })
+        },
+        {
+          key: '123',
+          subtitle: 'Fortaleza-CE',
+          temperature: 30,
+          weatherCondition: 'Clear',
+        },
+        {
+          key: '1234',
+          subtitle: 'São Paulo',
+          temperature: 25,
+          weatherCondition: 'Rain',
+        },
+      ];
 
-      }).catch(error => {
-        Toast.show('Error Gettig Weather Condtions')
-      });
+      this.setState({
+        temperature: json.main.temp,
+        localName: json.name,
+        weatherCondition: json.weather[0].main,
+        locals: arrItem,
+        isLoading: false,
+        refreshing: false,
+      })
+
+    }).catch(error => {
+      Toast.show('Error Gettig Weather Condtions')
+    });
   }
 
   onRefresh = () => {
@@ -119,23 +121,29 @@ export default class HomeScreen extends React.Component {
       <View style={styles.main}>
         {isLoading ? <Text>Fetching The Weather</Text> 
         : 
-              <FlatList 
-                refreshing={refreshing}
-                onRefresh={this.onRefresh} 
-                data={locals}
-                renderItem={({item}) => 
-                  <View style={styles.listItem}>
-                    <MaterialCommunityIcons.Button 
-                      size={48}
-                      color={'#EEE'}
-                      name={weatherConditions[item.weatherCondition].icon} 
-                      onPress={() => 
-                        navigate('Weather', {weather: item.weatherCondition, temperature: item.temperature}) }>
-                      <Text style={styles.textItem}>{item.subtitle} - {item.temperature}°</Text>
-                    </MaterialCommunityIcons.Button>
-                  </View>
-                }
-              />
+          <FlatList
+            refreshing={refreshing}
+            onRefresh={this.onRefresh}
+            data={locals}
+            renderItem={({ item }) => (
+              <View style={styles.listItem}>
+                <MaterialCommunityIcons.Button
+                  size={48}
+                  color={'#EEE'}
+                  name={weatherConditions[item.weatherCondition].icon}
+                  onPress={() =>
+                    navigate('Weather', {
+                      weather: item.weatherCondition,
+                      temperature: item.temperature,
+                    })
+                  }>
+                  <Text style={styles.textItem}>
+                    {item.subtitle} - {item.temperature}°
+                  </Text>
+                </MaterialCommunityIcons.Button>
+              </View>
+            )}
+          />
         }
       </View>
     );

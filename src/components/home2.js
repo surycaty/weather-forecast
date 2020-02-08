@@ -11,13 +11,14 @@ export default class HomeScreen2 extends React.Component {
     isLoading: false,
     locals: [],
     error: null,
+    refreshing: false,
   };
 
   componentDidMount() {
-    this.pegaPermissao();
+    this.getPermission();
   }
 
-  async pegaPermissao() {
+  async getPermission() {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -29,25 +30,30 @@ export default class HomeScreen2 extends React.Component {
         },
       );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        Geolocation.getCurrentPosition(
-          position => {
-            this.fetchWeather(
-              position.coords.latitude,
-              position.coords.longitude,
-            );
-          },
-          error => {
-            this.setState({
-              error: 'Error Gettig Weather Condtions',
-            });
-          },
-        );
-      } else {
-        console.log('GPS permission denied');
-      }
+      this.getPositionWeather(granted);
+
     } catch (err) {
       console.warn(err);
+    }
+  }
+
+  getPositionWeather = (granted) => {
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      Geolocation.getCurrentPosition(
+        position => {
+          this.fetchWeather(
+            position.coords.latitude,
+            position.coords.longitude,
+          );
+        },
+        () => {
+          this.setState({
+            error: 'Error Gettig Weather Condtions',
+          });
+        },
+      );
+    } else {
+      console.log('GPS permission denied');
     }
   }
 
@@ -55,37 +61,41 @@ export default class HomeScreen2 extends React.Component {
     fetch(
       `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`,
     )
-      .then(res => res.json())
-      .then(json => {
-        const arrItem = [
-          {
-            key: json.id.toString(),
-            subtitle: json.name,
-            temperature: Math.round(json.main.temp),
-            weatherCondition: json.weather[0].main,
-          },
-          {
-            key: '123',
-            subtitle: 'Fortaleza-CE',
-            temperature: 30,
-            weatherCondition: 'Clear',
-          },
-          {
-            key: '1234',
-            subtitle: 'São Paulo',
-            temperature: 25,
-            weatherCondition: 'Rain',
-          },
-        ];
-
-        this.setState({
-          temperature: json.main.temp,
-          localName: json.name,
+    .then(res => res.json())
+    .then(json => {
+      const arrItem = [
+        {
+          key: json.id.toString(),
+          subtitle: json.name,
+          temperature: Math.round(json.main.temp),
           weatherCondition: json.weather[0].main,
-          locals: arrItem,
-          isLoading: false,
-        });
+        },
+        {
+          key: '123',
+          subtitle: 'Fortaleza-CE',
+          temperature: 30,
+          weatherCondition: 'Clear',
+        },
+        {
+          key: '1234',
+          subtitle: 'São Paulo',
+          temperature: 25,
+          weatherCondition: 'Rain',
+        },
+      ];
+
+      this.setState({
+        temperature: json.main.temp,
+        localName: json.name,
+        weatherCondition: json.weather[0].main,
+        locals: arrItem,
+        isLoading: false,
+        refreshing: false,
       });
+    })
+    .catch(error => {
+      Toast.show('Error Gettig Weather Condtions')
+    });
   }
 
   theme = {
@@ -93,6 +103,14 @@ export default class HomeScreen2 extends React.Component {
     padding: 0,
     boxSizing: 'border-box',
   };
+
+  onRefresh = () => {
+    console.log("refreshing");
+
+    this.getPermission();
+
+    return true;
+  }
 
   render() {
     return (
@@ -102,6 +120,8 @@ export default class HomeScreen2 extends React.Component {
             <Title>Weather Forecast</Title>
           </Titlebar>
           <FlatList
+            refreshing={this.state.refreshing}
+            onRefresh={this.onRefresh}
             data={this.state.locals}
             renderItem={({ item }) => (
               <Card

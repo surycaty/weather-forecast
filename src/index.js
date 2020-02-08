@@ -6,10 +6,8 @@ import HomeScreen2 from './components/home2';
 const NavigationStack = createStackNavigator({
 
     Home: {
-      screen: HomeScreen,
-      navigationOptions: {
-        headerShown: false,
-      }
+      screen: HomeScreen2,
+      navigationOptions: { headerShown: false, }
     },
     Weather: {
       screen: WeatherScreen,

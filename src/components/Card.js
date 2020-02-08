@@ -8,7 +8,7 @@ const Card = props => (
       <Title>{props.city}</Title>
     </HeaderContent>
     <Cover color={props.weather.color}>
-      <MaterialCommunityIcons name={props.weather.icon} size={100} />
+      <MaterialCommunityIcons name={props.weather.icon} size={80} />
       <Temperature>{props.temperature}°</Temperature>
     </Cover>
     <Content>
@@ -32,7 +32,10 @@ const Cover = styled.View`
   width: 100%;
   height: 120px;
   overflow: hidden;
-  align-items: center;
+  align-items: flex-end;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
 `;
 const Content = styled.View`
   padding-top: 10px;
@@ -65,8 +68,7 @@ const Subtitle = styled.Text`
 `;
 
 const Temperature = styled.Text`
-  text-align: center;
-  font-size: 220px;
+  font-size: 72px;
   font-weight: 600;
-  color: white;
+  color: black;
 `;
