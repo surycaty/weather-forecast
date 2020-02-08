@@ -5,6 +5,7 @@ import Card from './Card';
 import { weatherConditions } from '../utils/weather-conditions';
 import Geolocation from '@react-native-community/geolocation';
 import { API_KEY } from '../utils/weather-api-key';
+import Toast from 'react-native-simple-toast';
 
 export default class HomeScreen2 extends React.Component {
   state = {
