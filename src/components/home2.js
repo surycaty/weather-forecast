@@ -4,11 +4,12 @@ import styled, { ThemeProvider } from 'styled-components/native';
 import Card from './Card';
 import { weatherConditions } from '../utils/weather-conditions';
 import Geolocation from '@react-native-community/geolocation';
-import { API_KEY } from '../utils/weather-api-key';
+import { WeatherAPI } from '../utils/weather-api';
 import Toast from 'react-native-simple-toast';
 
 export default class HomeScreen2 extends React.Component {
 
+  weatherApi = new WeatherAPI();
   listIdCities= [];
   state = {
     isLoading: false,
@@ -77,9 +78,7 @@ export default class HomeScreen2 extends React.Component {
   }
 
   fetchLocalsWeather(cities) {
-    fetch(
-      `http://api.openweathermap.org/data/2.5/group?id=${cities}&units=metric&appid=${API_KEY}`,
-    )
+    fetch(this.weatherApi.getEndpointCities(cities),)
     .then(res => res.json())
     .then(json => {
       json.list.forEach(element => {
@@ -98,9 +97,7 @@ export default class HomeScreen2 extends React.Component {
   }
 
   fetchWeather(lat = 25, lon = 25) {
-    fetch(
-      `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&APPID=${API_KEY}&units=metric`,
-    )
+    fetch(this.weatherApi.getEndpointCurrentLocation(lat, lon),)
     .then(res => res.json())
     .then(json => {
       this.setState({
