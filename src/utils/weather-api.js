@@ -1,4 +1,4 @@
-import { ENDPOINT_API } from "./weather-api-key";
+import { ENDPOINT_API, ENDPOINT_API_GROUP } from "./weather-api-key";
 
 export class WeatherAPI {
 
@@ -7,7 +7,7 @@ export class WeatherAPI {
     }
 
     getEndpointCities(cities) {
-        return `${ENDPOINT_API}id=${cities}`
+        return `${ENDPOINT_API_GROUP}id=${cities}`
     }
 
 }

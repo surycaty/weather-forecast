@@ -6,6 +6,7 @@ import { weatherConditions } from '../utils/weather-conditions';
 import Geolocation from '@react-native-community/geolocation';
 import { WeatherAPI } from '../utils/weather-api';
 import Toast from 'react-native-simple-toast';
+import WeatherModel from '../models/weather.model';
 
 export default class HomeScreen2 extends React.Component {
 
@@ -19,9 +20,14 @@ export default class HomeScreen2 extends React.Component {
   };
 
   componentDidMount() {
-    this.listIdCities.push('6320062');
-    this.listIdCities.push('524901');
-    this.listIdCities.push('703448');
+    //TODO: TESTS
+    // this.listIdCities.push('6320062');
+    // this.listIdCities.push('524901');
+    // this.listIdCities.push('703448');
+
+    // this.listIdCities.push('2643743');
+    // this.listIdCities.push('6325494');
+    // this.listIdCities.push('2962943');
     
     this.getPermission();
   }
@@ -67,6 +73,21 @@ export default class HomeScreen2 extends React.Component {
     }
   }
 
+  fetchWeather(lat = -3.72, lon = -38.52) {
+    fetch(this.weatherApi.getEndpointCurrentLocation(lat, lon),)
+    .then(res => res.json())
+    .then(json => {
+      this.setState({
+        locals: [new WeatherModel(json)],
+        isLoading: false,
+        refreshing: false,
+      });
+    })
+    .catch(error => {
+      Toast.show('Error Gettig Weather Condtions')
+    });
+  }
+
   getLocalsWeather = (granted) => {
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
 
@@ -84,38 +105,11 @@ export default class HomeScreen2 extends React.Component {
     .then(res => res.json())
     .then(json => {
       json.list.forEach(element => {
-        this.state.locals.push({
-              key: element.id.toString(),
-              subtitle: element.name,
-              temperature: Math.round(element.main.temp),
-              weatherCondition: element.weather[0].main,
-            })
+        this.state.locals.push(new WeatherModel(element))
       });
     })
     .catch(error => {
       console.log(error)
-      Toast.show('Error Gettig Weather Condtions')
-    });
-  }
-
-  fetchWeather(lat = 25, lon = 25) {
-    fetch(this.weatherApi.getEndpointCurrentLocation(lat, lon),)
-    .then(res => res.json())
-    .then(json => {
-      this.setState({
-        locals: [
-          {
-            key: json.id.toString(),
-            subtitle: json.name,
-            temperature: Math.round(json.main.temp),
-            weatherCondition: json.weather[0].main,
-          }
-        ],
-        isLoading: false,
-        refreshing: false,
-      });
-    })
-    .catch(error => {
       Toast.show('Error Gettig Weather Condtions')
     });
   }
@@ -144,11 +138,8 @@ export default class HomeScreen2 extends React.Component {
             onRefresh={this.onRefresh}
             data={this.state.locals}
             renderItem={({ item }) => (
-              <Card
-                key={item.key}
-                city={item.subtitle}
-                temperature={item.temperature}
-                weather={weatherConditions['ce-br'][item.weatherCondition]}
+              <Card item={item}
+                weather={weatherConditions['pt-br'][item.weather.main]}
               />
             )}
           />
@@ -164,10 +155,14 @@ const Container = styled.View`
 `;
 const Titlebar = styled.View`
   width: 100%;
-  margin-top: 30px;
-  padding-left: 60px;
+  margin-top: 26px;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
+  overflow: hidden;
+  align-items: flex-end;
+  flex-direction: row;
+  display: flex;
+  justify-content: center;
 `;
 const Title = styled.Text`
   font-size: 40px;

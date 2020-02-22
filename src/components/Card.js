@@ -1,15 +1,20 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, Text } from 'react-native';
 
 const Card = props => (
   <Container>
     <HeaderContent>
-      <Title>{props.city}</Title>
+      <Title>{props.item.name}</Title>
     </HeaderContent>
     <Cover color={props.weather.color}>
       <MaterialCommunityIcons name={props.weather.icon} size={80} />
-      <Temperature>{props.temperature}°</Temperature>
+      <Temperature>{props.item.weather.temp}°</Temperature>
+      <View>
+        <Text>Min {props.item.weather.temp_min}°</Text>
+        <Text>Max {props.item.weather.temp_max}°</Text>
+      </View>
     </Cover>
     <Content>
       <Description>{props.weather.title}</Description>
@@ -30,13 +35,14 @@ const Container = styled.View`
 
 const Cover = styled.View`
   width: 100%;
-  height: 120px;
+  height: 110px;
   overflow: hidden;
   align-items: flex-end;
   flex-direction: row;
   display: flex;
   justify-content: center;
 `;
+
 const Content = styled.View`
   padding-top: 10px;
   flex-direction: column;
