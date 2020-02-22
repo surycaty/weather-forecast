@@ -19,8 +19,10 @@ export default class HomeScreen2 extends React.Component {
   };
 
   componentDidMount() {
+    this.listIdCities.push('6320062');
     this.listIdCities.push('524901');
     this.listIdCities.push('703448');
+    
     this.getPermission();
   }
 
@@ -146,7 +148,7 @@ export default class HomeScreen2 extends React.Component {
                 key={item.key}
                 city={item.subtitle}
                 temperature={item.temperature}
-                weather={weatherConditions[item.weatherCondition]}
+                weather={weatherConditions['ce-br'][item.weatherCondition]}
               />
             )}
           />
