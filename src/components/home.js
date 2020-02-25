@@ -7,8 +7,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { WeatherAPI } from '../utils/weather-api';
 import Toast from 'react-native-simple-toast';
 import WeatherModel from '../models/weather.model';
-
-
+import ActionButton from 'react-native-action-button';
 import MaterialCommunityIcons from 'react-native-vector-icons/EvilIcons';
 import SideBar from './side-bar';
 import Drawer from 'react-native-drawer';
@@ -24,7 +23,20 @@ export default class HomeScreen extends React.Component {
     refreshing: false,
   };
 
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('listCities');
+      if (value !== null) {
+        console.log(value);
+      }
+    } catch (error) {
+      console.log("papocou foi tudo")
+    }
+  };
+
   componentDidMount() {
+
+    this._retrieveData();
     //TODO: TESTS
     // this.listIdCities.push('6320062');
     // this.listIdCities.push('524901');
@@ -174,6 +186,9 @@ openControlPanel = () => {
               />
             </Container>
           </ThemeProvider>
+
+          <ActionButton buttonColor="rgba(0,0,0, 0.6)" 
+            onPress={()=>console.log("clicado")} />
          
       </Drawer>
     );
@@ -184,6 +199,7 @@ const Container = styled.View`
   flex: 1;
   background-color: white;
 `;
+
 const Titlebar = styled.View`
   width: 100%;
   margin-top: 26px;
@@ -195,6 +211,7 @@ const Titlebar = styled.View`
   display: flex;
   justify-content: center;
 `;
+
 const Title = styled.Text`
   font-size: 40px;
   font-weight: 500;
