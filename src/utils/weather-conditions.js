@@ -42,6 +42,12 @@ export const weatherConditions = {
       subtitle: 'Another name for Partial Raining',
       icon: 'weather-hail',
     },
+    Fog: {
+      color: '#3CD3AD',
+      title: 'Névoa',
+      subtitle: "Não vagueie pelas florestas!",
+      icon: 'weather-fog',
+    },
     Mist: {
       color: '#3CD3AD',
       title: 'Mist',
@@ -91,6 +97,12 @@ export const weatherConditions = {
       title: 'Neblina',
       subtitle: 'Outro nome para chuva parcial',
       icon: 'weather-hail',
+    },
+    Fog: {
+      color: '#3CD3AD',
+      title: 'Névoa',
+      subtitle: "Não vagueie pelas florestas!",
+      icon: 'weather-fog',
     },
     Mist: {
       color: '#3CD3AD',
