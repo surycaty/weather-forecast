@@ -1,8 +1,8 @@
 import React from "react";
-import { Image, View, FlatList, Text } from "react-native";
+import { AsyncStorage, FlatList, Image, Text, View } from "react-native";
+import SwitchToggle from 'react-native-switch-toggle';
 import MaterialCommunityIcons from 'react-native-vector-icons/EvilIcons';
 import styled from 'styled-components/native';
-import SwitchToggle from 'react-native-switch-toggle';
 
 const routes = ["Configurações", "Weather"];
 
@@ -12,6 +12,29 @@ export default class SideBar extends React.Component {
         switchTemp: false
     }
 
+    componentDidMount() {
+        this._retrieveData();
+    }
+
+    _storeData = async (key, value) => {
+        try {
+            await AsyncStorage.setItem(key, value);
+        } catch (error) {
+            console.log("Erro ao gravar", error)
+        }
+    };
+      
+    _retrieveData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('uniTemp');
+          if (value !== null) {
+            this.setState({ switchTemp: ('F' === value) });
+          }
+        } catch (error) {
+            console.log("papocou foi tudo")
+        }
+    };
+      
   render() {
 
     return (
@@ -95,10 +118,12 @@ export default class SideBar extends React.Component {
     return this.state.switchTemp ? 'F°' : '';
   }
 
-  onPressSwitchTemp = () => this.setState({ switchTemp: !this.state.switchTemp });
+  onPressSwitchTemp = () => {
+      this._storeData('uniTemp', (this.state.switchTemp)? 'C': 'F' )
+      this.setState({ switchTemp: !this.state.switchTemp });
+  }
 
 }
-
 
 const Container = styled.View`
   flex: 1;
