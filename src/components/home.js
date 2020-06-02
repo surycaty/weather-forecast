@@ -1,16 +1,16 @@
-import React from 'react';
-import { PermissionsAndroid, FlatList } from 'react-native';
-import styled, { ThemeProvider } from 'styled-components/native';
-import Card from './card';
-import { weatherConditions } from '../utils/weather-conditions';
 import Geolocation from '@react-native-community/geolocation';
-import { WeatherAPI } from '../utils/weather-api';
-import Toast from 'react-native-simple-toast';
-import WeatherModel from '../models/weather.model';
+import React from 'react';
+import { FlatList, PermissionsAndroid } from 'react-native';
 import ActionButton from 'react-native-action-button';
-import MaterialCommunityIcons from 'react-native-vector-icons/EvilIcons';
-import SideBar from './side-bar';
 import Drawer from 'react-native-drawer';
+import Toast from 'react-native-simple-toast';
+import MaterialCommunityIcons from 'react-native-vector-icons/EvilIcons';
+import styled, { ThemeProvider } from 'styled-components/native';
+import WeatherModel from '../models/weather.model';
+import { WeatherAPI } from '../utils/weather-api';
+import { weatherConditions } from '../utils/weather-conditions';
+import Card from './card';
+import SideBar from './side-bar';
 
 export default class HomeScreen extends React.Component {
 
