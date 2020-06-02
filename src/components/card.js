@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { View, Text } from 'react-native';
 
-const Card = props => (
+const card = props => (
   <Container>
     <HeaderContent>
       <Title>{props.item.name}</Title>
@@ -23,7 +23,7 @@ const Card = props => (
   </Container>
 );
 
-export default Card;
+export default card;
 
 const Container = styled.View`
   background: #fff;

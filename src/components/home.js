@@ -1,7 +1,7 @@
 import React from 'react';
 import { PermissionsAndroid, FlatList } from 'react-native';
 import styled, { ThemeProvider } from 'styled-components/native';
-import Card from './Card';
+import Card from './card';
 import { weatherConditions } from '../utils/weather-conditions';
 import Geolocation from '@react-native-community/geolocation';
 import { WeatherAPI } from '../utils/weather-api';
