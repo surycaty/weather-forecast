@@ -15,6 +15,7 @@
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-action-button": "^2.8.5",
+    "react-native-autocomplete-input": "^4.2.0",
     "react-native-drawer": "^2.5.1",
     "react-native-gesture-handler": "^1.5.3",
     "react-native-safe-area-context": "^0.6.4",

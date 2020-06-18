@@ -1,6 +1,6 @@
 import Geolocation from '@react-native-community/geolocation';
 import React from 'react';
-import { FlatList, PermissionsAndroid } from 'react-native';
+import { FlatList, PermissionsAndroid, AsyncStorage } from 'react-native';
 import ActionButton from 'react-native-action-button';
 import Drawer from 'react-native-drawer';
 import Toast from 'react-native-simple-toast';
@@ -27,24 +27,17 @@ export default class HomeScreen extends React.Component {
     try {
       const value = await AsyncStorage.getItem('listCities');
       if (value !== null) {
-        console.log(value);
+        var arrIds = value.split(',')
+        arrIds.forEach(element => this.listIdCities.push(element))
       }
     } catch (error) {
-      console.log("papocou foi tudo")
+      console.log("papocou foi tudo: não te cidades")
     }
   };
 
   componentDidMount() {
 
     this._retrieveData();
-    //TODO: TESTS
-    // this.listIdCities.push('6320062');
-    // this.listIdCities.push('524901');
-    // this.listIdCities.push('703448');
-
-    // this.listIdCities.push('2643743');
-    // this.listIdCities.push('6325494');
-    // this.listIdCities.push('2962943');
     
     this.getPermission();
   }
@@ -188,7 +181,7 @@ openControlPanel = () => {
           </ThemeProvider>
 
           <ActionButton buttonColor="rgba(0,0,0, 0.6)" 
-            onPress={()=>console.log("clicado")} />
+            onPress={() => this.props.navigation.navigate('Search')}  />
          
       </Drawer>
     );
